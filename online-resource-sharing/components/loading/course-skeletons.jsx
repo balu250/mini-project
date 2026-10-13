@@ -13,6 +13,7 @@ export function CourseCardSkeleton() {
                     <Skeleton className="h-9 w-32 rounded-md" />
                 </div>
             </div>
+            
         </div>
     );
 }
