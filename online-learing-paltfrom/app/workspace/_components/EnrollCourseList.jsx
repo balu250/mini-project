@@ -1,19 +1,14 @@
 "use client";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import EnrollCourseCard from "./EnrollCourseCard";
 import { EnrollCourseListSkeleton } from "@/components/loading/course-skeletons";
 
 function EnrollCourseList() {
-
     const [enrolledcoursedList, setEnrolledCourseList] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        GetEnrolledCourse();
-    }, []);
-
-    const GetEnrolledCourse = async () => {
+    const GetEnrolledCourse = useCallback(async () => {
         setLoading(true);
         try {
             const result = await axios.get('/api/enroll-course');
@@ -24,7 +19,11 @@ function EnrollCourseList() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        GetEnrolledCourse();
+    }, [GetEnrolledCourse]);
 
     if (loading) {
         return <EnrollCourseListSkeleton />;
@@ -39,7 +38,7 @@ function EnrollCourseList() {
                 ))}
             </div>
         </div>
-    )
-
+    );
 }
-export default EnrollCourseList
+
+export default EnrollCourseList;

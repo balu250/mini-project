@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { Book, PlayCircle } from "lucide-react";
+import { PlayCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -15,8 +15,8 @@ function EnrollCourseCard({ course, enrollCourse }) {
     const courseDescription = courseJson?.description || targetCourse?.description || "";
     const noOfChapters = courseJson?.noOfChapters || targetCourse?.noOfChapters;
 
-    const initialBanner = targetCourse?.bannerImageUrl || DEFAULT_BANNER;
-    const [imgSrc, setImgSrc] = useState(initialBanner);
+    const [imgSrc, setImgSrc] = useState(null);
+    const displayBanner = imgSrc || targetCourse?.bannerImageUrl || DEFAULT_BANNER;
 
     const calculateProgress = () => {
         const completed = enrollCourse?.completedChapters?.length || 0;
@@ -24,14 +24,10 @@ function EnrollCourseCard({ course, enrollCourse }) {
         return Math.min(100, Math.round((completed / total) * 100));
     };
 
-    useEffect(() => {
-        setImgSrc(targetCourse?.bannerImageUrl || DEFAULT_BANNER);
-    }, [targetCourse?.bannerImageUrl]);
-
     return (
         <div className="shadow rounded-xl">
             <Image
-                src={imgSrc}
+                src={displayBanner}
                 alt={courseName}
                 width={400}
                 height={300}

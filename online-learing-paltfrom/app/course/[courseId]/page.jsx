@@ -1,6 +1,6 @@
 "use client"
 import AppHeader from "@/app/workspace/_components/AppHeader";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ChapterListSidebar from "../_components/ChaptyerListSidebar";
 import ChapterContent from "../_components/ChapterContent";
 import { useParams } from "next/navigation";
@@ -12,13 +12,8 @@ function Course() {
     const [courseInfo, setCourseInfo] = useState();
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (courseId) {
-            GetEnrolledCourseById();
-        }
-    }, [courseId]);
-
-    const GetEnrolledCourseById = async ({ showPageLoader = true } = {}) => {
+    const GetEnrolledCourseById = useCallback(async ({ showPageLoader = true } = {}) => {
+        if (!courseId) return;
         if (showPageLoader) setLoading(true);
         try {
             const result = await axios.get('/api/enroll-course?courseId=' + courseId);
@@ -28,7 +23,13 @@ function Course() {
         } finally {
             if (showPageLoader) setLoading(false);
         }
-    };
+    }, [courseId]);
+
+    useEffect(() => {
+        if (courseId) {
+            GetEnrolledCourseById();
+        }
+    }, [courseId, GetEnrolledCourseById]);
 
     return (
         <div>

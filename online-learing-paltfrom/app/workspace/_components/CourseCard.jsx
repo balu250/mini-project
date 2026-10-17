@@ -4,45 +4,39 @@ import axios from "axios";
 import { Book, LoaderCircle, PlayCircle, Settings } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 const DEFAULT_BANNER = "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80";
 
 function CourseCard({ course }) {
     const courseJson = course?.courseJson?.course;
-    const initialBanner = course?.bannerImageUrl || DEFAULT_BANNER;
-    const [imgSrc, setImgSrc] = useState(initialBanner);
-    const [loading, setLoading] = useState(false)
+    const [imgSrc, setImgSrc] = useState(null);
+    const displayBanner = imgSrc || course?.bannerImageUrl || DEFAULT_BANNER;
+    const [loading, setLoading] = useState(false);
 
     const onEnrollCourse = async () => {
         try {
             setLoading(true);
             const result = await axios.post('/api/enroll-course', { courseId: course?.cid });
-            console.log(result.data);
             if (result.data?.resp === 'Already Enrolled') {
                 toast.warning('Already Enrolled');
                 setLoading(false);
                 return;
             }
-            toast.success('Enrolled')
+            toast.success('Enrolled');
+            setLoading(false);
+        } catch (err) {
+            console.error("Enrollment error:", err);
+            toast.error('server side error');
             setLoading(false);
         }
-        catch (err) {
-            toast.error('server side error')
-            setLoading(false);
-
-        }
-    }
-
-    useEffect(() => {
-        setImgSrc(course?.bannerImageUrl || DEFAULT_BANNER);
-    }, [course?.bannerImageUrl]);
+    };
 
     return (
         <div className="shadow rounded-xl">
             <Image
-                src={imgSrc}
+                src={displayBanner}
                 alt={courseJson?.name || course?.name || "Course banner"}
                 width={400}
                 height={300}

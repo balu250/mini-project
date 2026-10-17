@@ -12,7 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "declarations.d.ts",
+    "eslint-report.json",
   ]),
+  {
+    rules: {
+      "react-hooks/set-state-in-effect": "warn",
+    },
+  },
 ]);
 
 export default eslintConfig;

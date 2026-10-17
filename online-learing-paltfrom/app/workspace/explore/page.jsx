@@ -4,25 +4,16 @@ import { Input } from "@/components/ui/input";
 import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { Search } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CourseCard from "../_components/CourseCard";
 import { CourseCardGridSkeleton } from "@/components/loading/course-skeletons";
 
 function Explore() {
     const [courseList, setCourseList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const { user, isLoaded } = useUser();
 
-    useEffect(() => {
-        if (!isLoaded) return;
-        if (!user) {
-            setLoading(false);
-            return;
-        }
-        GetCourseList();
-    }, [user, isLoaded]);
-
-    const GetCourseList = async () => {
+    const GetCourseList = useCallback(async () => {
         setLoading(true);
         try {
             const result = await axios.get('/api/courses?courseId=0');
@@ -32,9 +23,15 @@ function Explore() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const showSkeleton = !isLoaded || loading;
+    useEffect(() => {
+        if (isLoaded && user) {
+            GetCourseList();
+        }
+    }, [user, isLoaded, GetCourseList]);
+
+    const showSkeleton = !isLoaded || (Boolean(user) && loading);
 
     return (
         <div>
@@ -59,7 +56,7 @@ function Explore() {
             )}
 
         </div>
-    )
+    );
 }
 
-export default Explore
+export default Explore;

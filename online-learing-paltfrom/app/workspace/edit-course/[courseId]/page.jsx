@@ -1,6 +1,6 @@
 "use client"
 import { useParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import CourseInfo from "../_components/CourseInfo";
 import ChapterTopicList from "../_components/ChapterTopicList";
@@ -11,13 +11,8 @@ function EditCourse({ ViewCourse = false }) {
     const [loading, setLoading] = useState(true);
     const [course, setCourse] = useState();
 
-    useEffect(() => {
-        if (courseId) {
-            GetCourseInfo();
-        }
-    }, [courseId])
-
-    const GetCourseInfo = async () => {
+    const GetCourseInfo = useCallback(async () => {
+        if (!courseId) return;
         setLoading(true);
         try {
             const result = await axios.get('/api/courses?courseId=' + courseId);
@@ -27,7 +22,13 @@ function EditCourse({ ViewCourse = false }) {
         } finally {
             setLoading(false);
         }
-    }
+    }, [courseId]);
+
+    useEffect(() => {
+        if (courseId) {
+            GetCourseInfo();
+        }
+    }, [courseId, GetCourseInfo]);
 
     if (loading) {
         return <EditCoursePageSkeleton />;
