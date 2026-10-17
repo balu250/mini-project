@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { UserDetailContext } from "@/context/UserDetailContext";
+import { UserDetailContext, UserDetail } from "@/context/UserDetailContext";
 import { SelectedChapterIndexContent } from "@/context/SelectedChapterIndexContent";
 
 interface ProviderProps {
@@ -11,16 +11,10 @@ interface ProviderProps {
 
 export default function Provider({ children }: ProviderProps) {
   const { user, isLoaded, isSignedIn } = useUser();
-  const [userDetail, setUserDetail] = useState<any>(null);
+  const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(0);
 
-  useEffect(() => {
-    if (isLoaded && isSignedIn && user) {
-      checkIsNewUser();
-    }
-  }, [user, isLoaded, isSignedIn]);
-
-  const checkIsNewUser = async () => {
+  const checkIsNewUser = useCallback(async () => {
     try {
       const email = user?.primaryEmailAddress?.emailAddress;
       const name = user?.fullName || user?.firstName || email || "User";
@@ -51,14 +45,19 @@ export default function Provider({ children }: ProviderProps) {
     } catch (error) {
       console.error("Failed to check/create user:", error);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      checkIsNewUser();
+    }
+  }, [user, isLoaded, isSignedIn, checkIsNewUser]);
 
   return (
     <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
-      <SelectedChapterIndexContent.Provider value={{ selectedChapterIndex, setSelectedChapterIndex } as any} >
+      <SelectedChapterIndexContent.Provider value={{ selectedChapterIndex, setSelectedChapterIndex }}>
         <div>{children}</div>
       </SelectedChapterIndexContent.Provider>
-
     </UserDetailContext.Provider>
   );
 }
