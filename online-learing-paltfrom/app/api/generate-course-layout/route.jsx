@@ -136,7 +136,7 @@ export async function POST(req) {
         const userDescription = formData?.description?.trim() ? formData.description.trim() : '';
 
         if (!courseLayoutJson?.course) {
-            console.warn("Gemini API overloaded or unavailable; generating fallback course structure.");
+            console.warn("Gemini API overloaded or unavailable; generating fallback course structure. Last error:", lastError?.message || lastError);
             const numChaps = Math.max(1, Number(formData?.noOfChapters || 3));
             courseLayoutJson = {
                 course: {

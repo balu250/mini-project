@@ -13,7 +13,7 @@ function ChapterListSidebar({ courseInfo }) {
     const course = courseInfo?.courses;
     const enrollCourse = courseInfo?.enrollCourse;
     const chapters = course?.courseJson?.course?.chapters || (Array.isArray(course?.courseContent) ? course?.courseContent : []);
-    const { selectedChapterIndex, setSelectedChapterIndex } = useContext(SelectedChapterIndexContent);
+    const { setSelectedChapterIndex } = useContext(SelectedChapterIndexContent);
     const completedChapters = enrollCourse?.completedChapters || enrollCourse?.completedChapter || [];
 
     return (

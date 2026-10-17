@@ -2,8 +2,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { shadcn } from "@clerk/ui/themes";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans, Playfair_Display } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Provider from "./provider";

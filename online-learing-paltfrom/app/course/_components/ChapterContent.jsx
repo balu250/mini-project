@@ -36,7 +36,7 @@ function ChapterContent({ courseInfo, refreshData }) {
                     courseId: courseId,
                     completedChapters: completedChapters
                 });
-                refreshData && refreshData();
+                if (refreshData) refreshData();
                 toast.success('Chapter Marked as Completed!');
             } catch (error) {
                 console.error("Error marking chapter complete:", error);

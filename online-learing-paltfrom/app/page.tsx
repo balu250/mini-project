@@ -12,7 +12,6 @@ import {
   Trophy,
   Compass,
   CheckCircle2,
-  Mail,
   Menu,
   X,
   Send
